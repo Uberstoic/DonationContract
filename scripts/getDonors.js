@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 
 async function main() {
   try {
-    const donationAddress = "0x1397e67881969d0a00C671e203861f65754eFB4F";
+    const donationAddress = "0x3671771eF1E53d6367F36521B0297ec2E4CA296E";
     const donation = await ethers.getContractAt("Donation", donationAddress);
 
     console.log("Fetching donors list...");

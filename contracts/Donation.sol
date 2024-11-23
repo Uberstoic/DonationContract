@@ -35,8 +35,16 @@ contract Donation {
         emit FundsWithdrawn(_to, _amount);
     }
 
-    function getDonors() external view returns (address[] memory) {
-        return donors;
+    function getDonors(uint256 start, uint256 count) external view returns (address[] memory) {
+        uint256 length = donors.length;
+        require(start < length, "Start index out of bounds");
+        uint256 end = start + count > length ? length : start + count;
+
+        address[] memory result = new address[](end - start);
+        for (uint256 i = start; i < end; i++) {
+            result[i - start] = donors[i];
+        }
+        return result;
     }
 
     function getDonations(address _donor) external view returns (uint256) {

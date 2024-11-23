@@ -17,7 +17,7 @@ describe("Donation Contract", function () {
     });
 
     it("Should initialize with empty donors list", async function () {
-      expect((await donation.getDonors()).length).to.equal(0);
+      await expect(donation.getDonors(0, 1)).to.be.revertedWith("Start index out of bounds");
     });
   });
 
@@ -28,8 +28,10 @@ describe("Donation Contract", function () {
 
       expect(await donation.getDonations(addr1.address)).to.equal(parseEther("1"));
       expect(await donation.getDonations(addr2.address)).to.equal(parseEther("2"));
-      expect(await donation.getDonors()).to.include(addr1.address);
-      expect(await donation.getDonors()).to.include(addr2.address);
+      
+      const donors = await donation.getDonors(0, 10);
+      expect(donors).to.include(addr1.address);
+      expect(donors).to.include(addr2.address);
       expect(await ethers.provider.getBalance(await donation.getAddress())).to.equal(parseEther("3"));
     });
 
@@ -42,7 +44,7 @@ describe("Donation Contract", function () {
     it("Should not add duplicate donors", async function () {
       await donation.connect(addr1).donate({ value: parseEther("1") });
       await donation.connect(addr1).donate({ value: parseEther("1") });
-      const donors = await donation.getDonors();
+      const donors = await donation.getDonors(0, 10);
       expect(donors.length).to.equal(1);
       expect(donors[0]).to.equal(addr1.address);
     });
@@ -118,8 +120,41 @@ describe("Donation Contract", function () {
     });
 
     it("Should return empty array when no donations made", async function () {
-      const donors = await donation.getDonors();
-      expect(donors.length).to.equal(0);
+      await expect(donation.getDonors(0, 10)).to.be.revertedWith("Start index out of bounds");
+    });
+
+    describe("Paginated Donors List", function () {
+      beforeEach(async function () {
+        // Create multiple donors
+        const signers = await ethers.getSigners();
+        for(let i = 1; i <= 5; i++) {
+          await donation.connect(signers[i]).donate({ value: parseEther("1") });
+        }
+      });
+
+      it("Should return correct subset of donors", async function () {
+        const donors = await donation.getDonors(0, 3);
+        expect(donors.length).to.equal(3);
+      });
+
+      it("Should handle requests exceeding list length", async function () {
+        const donors = await donation.getDonors(0, 10);
+        expect(donors.length).to.equal(5); // Should return all 5 donors
+      });
+
+      it("Should return correct donors for mid-list pagination", async function () {
+        const donors = await donation.getDonors(2, 2);
+        expect(donors.length).to.equal(2);
+      });
+
+      it("Should revert when start index is out of bounds", async function () {
+        await expect(donation.getDonors(10, 1)).to.be.revertedWith("Start index out of bounds");
+      });
+
+      it("Should handle pagination at the end of the list", async function () {
+        const donors = await donation.getDonors(4, 2);
+        expect(donors.length).to.equal(1); // Should return only the last donor
+      });
     });
   });
 });

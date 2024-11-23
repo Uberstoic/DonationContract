@@ -13,4 +13,4 @@
 ---
 
 ## Адрес развёрнутого смарт-контракта:
-https://sepolia.etherscan.io/address/0x1397e67881969d0a00C671e203861f65754eFB4F
+https://sepolia.etherscan.io/address/0x3671771eF1E53d6367F36521B0297ec2E4CA296E
