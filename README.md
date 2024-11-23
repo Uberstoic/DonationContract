@@ -1,16 +1,9 @@
-<<<<<<< HEAD
 # DonationContract
-=======
-# Sample Hardhat Project
+DonationContract — это смарт-контракт для сбора пожертвований в блокчейне. Пользователи могут отправлять пожертвования в нативной валюте сети (например, ETH в Ethereum), а владелец контракта может управлять собранными средствами.
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.js
-```
+Контракт включает:
+Возможность вносить пожертвования.
+Хранение списка уникальных доноров.
+Отслеживание сумм пожертвований для каждого адреса.
+Вывод средств на любой адрес, доступный только владельцу контракта.
+Ограничение на нулевые пожертвования.
