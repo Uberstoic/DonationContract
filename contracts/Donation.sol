@@ -28,6 +28,8 @@ contract Donation {
     }
 
     function withdraw(address payable _to, uint256 _amount) external onlyOwner {
+        require(_to != address(0), "Cannot withdraw to zero address");
+        require(_amount > 0, "Amount must be greater than 0");
         require(_amount <= address(this).balance, "Insufficient balance");
         _to.transfer(_amount);
         emit FundsWithdrawn(_to, _amount);
