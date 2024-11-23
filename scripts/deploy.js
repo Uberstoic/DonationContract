@@ -4,9 +4,8 @@ const { ethers } = require("hardhat");
 async function main() {
   const Donation = await ethers.getContractFactory("Donation");
   const donation = await Donation.deploy();
-  await donation.deployed();
 
-  console.log("Donation contract deployed to:", donation.address);
+  console.log("Donation contract deployed to:", await donation.getAddress());
 }
 
 main().catch((error) => {
